@@ -64,7 +64,7 @@ write meta info
 status code : 302 -> redirection
 res.writeHead(status code, reason, header object);
 
-# The below three line has two important implications:
+### The below three line has two important implications:
 1. sending the response doesn't mean that our 'end' event listeners are dead
 they will still execute even if the response is already gone
 2. if we do something in the event listener that should influence the response
@@ -77,3 +77,28 @@ res.statusCode = 302;
 res.setHeader('Location', '/');
 return res.end();
 ```
+
+### Block Code
+syncronous code block next code execution untill the file is created.it become a problem for big files.
+Synchronously writes data to a file, replacing the file if it already exists.
+
+```javascript
+fs.writeFileSync('message.txt', message);
+```
+
+### Non-Blocking Code
+Asynchronously writes data to a file, replacing the file if it already exists.This approach never block the code or server.
+
+```javascript
+fs.writeFile('message.txt', message, (err) => {
+    // this response should only be sent if we're done working with the file
+    res.statusCode = 302;
+    res.setHeader('Location', '/');
+    return res.end();
+});
+```
+
+### Node module system
+File content actually cached by node and we can't edit it externally. So, if we somehow would define routes as an object and we tried to add a new property on the fly, this will not manupulate the original file.
+So, this is basically locked and not accessible from outside.
+We can only export stuff that we can read from outside.
